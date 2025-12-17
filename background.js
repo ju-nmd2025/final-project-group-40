@@ -93,7 +93,7 @@ function draw() {
    rect(b.x, b.y, b.w, b.h, 8);
 
 
-   // windows
+   // multiple windows
    for (let wy = b.y + 20; wy < b.y + b.h - 20; wy += 18) {
      for (let wx = b.x + 8; wx < b.x + b.w - 8; wx += 12) {
        if (random() > 0.35) {

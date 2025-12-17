@@ -6,6 +6,13 @@ class Character {
     this.x = x;
     this.y = y;
     this.color = color;
+    this.w = 80; // collision width
+    this.h = 80; // collision height
+    this.vx = 0;
+    this.vy = 0;
+    this.gravity = 0.8;
+    this.jumpStrength = -18;
+    this.speed = 6;
     this.whiskerLengths = [25, 30, 25]; // Array for whisker lengths
     this.eyeHighlights = []; // Array for eye highlight positions
     this.tailSegments = [];
@@ -28,9 +35,36 @@ class Character {
     }
   }
 
+  //Game logic - in progress
+  update() {
+    // gravity
+    this.vy += this.gravity;
+
+    // movement
+    this.x += this.vx;
+    this.y += this.vy;
+
+    // horizontal controls
+    this.vx = 0;
+    if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
+      this.vx = -this.speed;
+    }
+    if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
+      this.vx = this.speed;
+    }
+
+    // screen wrap ?
+    if (this.x > width) this.x = 0;
+    if (this.x < 0) this.x = width;
+  }
+
+  jump() {
+    this.vy = this.jumpStrength;
+  }
+
   draw() {
     push();
-    translate(this.x, this.y);
+    translate(this.x + this.w / 2, this.y + this.h / 2);
 
     this.drawHead();
     this.drawEars();

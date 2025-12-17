@@ -1,13 +1,13 @@
-let platform;
+let sushiPlatform;
 
-function setup () {
+function setup() {
     createCanvas (400,600);
-    platform = new SushiPlatform (80,350,240,20);   
+    sushiPlatform = new SushiPlatform (80,350,240,20);   
 }
 
 function draw () {
     background (220);
-    platform.show ();
+    sushiPlatform.show();
 }
 
 class SushiPlatform {
@@ -31,22 +31,19 @@ show () {
 
     // Seaweed wrap
     fill (20, 60, 20); //dark green seaweed
-    rect(0, this.h * 0.6, this.w, this.h * 0.4, 8);
+    rect(0, this.h * 0.6, this.w, this.h * 0.4, 10);
 
     // Topping salmon 
     fill(255, 100, 100, 180); // pink salmon
     rect(10, 0, this.w - 20, this.h * 0.4, 8);
 
-    // More details
+    //* More details
     fill(200);
     for(let i = 5; i < this.w; i += 15) {
-        for (let j =5; j < this.h * 0.6; j += 10) {
+        for (let j = 5; j < this.h * 0.6; j += 10) {
             ellipse (i, j, 3, 3);
         }
     }
-
- pop();
-
+    
+    pop();
 }
-
-

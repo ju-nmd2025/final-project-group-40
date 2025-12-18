@@ -1,47 +1,37 @@
-import platform from "platform";
+import {
+  Platform,
+  BambooPlatform,
+  SushiPlatform,
+  CloudPlatform,
+} from "platform.js";
 import { Character } from "./character";
 
+let character;
+let platforms = [];
+let score = 0;
+let gameState = "start"; // Game initial status
+let scrollSpeed = 2;
+
+// Setup
 function setup() {
-    createCanvas(canvasWidth, canvasHeight);
-}
+  // same size as background
+  createCanvas(400, 700);
 
-// Obstacle / Spike / Death
-function drawObstacle() {
-    push();
-    fill("red");
-    triangle(180, 300, 210, 240, 240, 300);
-    pop();
-}
+  // create character
+  character = new Character(width / 2, height - 100, color(150, 80, 200));
+  initPlatforms();
 
-let canvasWidth = 400;
-let canvasHeight = 400;
-let floor = 300;
-let character = new Character(50, 50, 50, 50);
-
-function draw() {
-    background(100, 100, 100);
-
-    character.draw();
-    platform.draw();
-
-    platform.x -= 10;
-    if (platform.x + platform.w < 0) {
-        platform.x = 500;
-    }
-
-    if (
-        character.y + character.h < 300 &&
-        !character.isColliding(character, platform)
-    ) {
-        character.y += 10;
-    }
-
-    // Floor
-    line(0, floor, canvasWidth, floor);
+  // Generate initial platforms
+  platforms.push(new BambooPlatform(100, 600));
+  platforms.push(new SushiPlatform(250, 500));
+  platforms.push(new CloudPlatform(150, 400));
 }
 
 function keyPressed() {
-    if (character.y + character.h === floor || character.isColliding(character, platform)) {
-        character.y -= 120;
-    }
+  if (
+    character.y + character.h === floor ||
+    character.isColliding(character, platform)
+  ) {
+    character.y -= 120;
+  }
 }

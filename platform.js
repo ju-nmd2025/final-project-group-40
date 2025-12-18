@@ -75,7 +75,7 @@ class SushiPlatform extends Platform {
 
     // Rice shape
     fill(220); // white rice
-    ellipse(0, 32, this.w * 0.95, this.h * 0.45);
+    ellipse(0, 32, 260 * 0.95, 70 * 0.45);
 
     // Rice base
     fill(250); // white rice

@@ -3,8 +3,8 @@ class Platform {
   constructor(x, y, h) {
     this.x = x;
     this.y = y;
-    this.w = 55;
-    this.h = h;
+    this.w = 100;
+    this.h = 20;
     this.vx = 0;
     this.isBroken = false;
   }
@@ -29,8 +29,8 @@ class Platform {
 //======BAMBMOO PLATFORM=====//
 
 class BambooPlatform extends Platform {
-  constructor(x, y, w, h = 20) {
-    super(x, y, w, h);
+  constructor(x, y) {
+    super(x, y, 100, 20);
   }
 
   show() {
@@ -62,13 +62,14 @@ class BambooPlatform extends Platform {
 //======SUSHI PLATFORM====//
 
 class SushiPlatform extends Platform {
-  constructor(x, y, w, h = 70) {
-    super(x, y, w, h);
+  constructor(x, y, w, h) {
+    super(x, y, 100);
   }
 
   show() {
     push();
-    translate(this.x, this.y);
+    translate(this.x + this.w / 2, this.y);
+    scale(100 / 260);
     rectMode(CENTER);
     noStroke();
 
@@ -93,10 +94,10 @@ class SushiPlatform extends Platform {
     // Salmon part
     fill(255, 120, 120); // pink salmon
     beginShape();
-    vertex(-this.w / 2 + 20, 10);
-    bezierVertex(-this.w / 4, -35, this.w / 4, -35, this.w / 2 - 20, 10);
-    vertex(this.w / 2 - 10, 30);
-    bezierVertex(this.w / 4, 10, -this.w / 4, 10, -this.w / 2 + 10, 30);
+    vertex(-110, 10);
+    bezierVertex(-65, -35, 65, -35, 110, 10);
+    vertex(100, 30);
+    bezierVertex(65, 10, -65, 10, -100, 30);
     endShape(CLOSE);
 
     // Salmo stripes
@@ -117,17 +118,29 @@ class SushiPlatform extends Platform {
 }
 
 //======CLOUD PLATFORM====//
-
 class CloudPlatform extends Platform {
-  constructor(x, y, w, h = 20) {
-    super(x, y, w, h);
+  constructor(x, y) {
+    super(x, y, 100, 22);
+
     this.color = random() > 0.5 ? color(280, 185, 205) : color(180, 190, 200);
 
     this.puffs = [];
+
+    // Bottom layer
+    for (let i = 0; i < 5; i++) {
+      this.puffs.push({
+        x: map(i, 0, 4, -45, 45),
+        y: random(-4, 2),
+        s: random(26, 32),
+      });
+    }
+
+    // Top layer - puffy part
     for (let i = 0; i < 3; i++) {
       this.puffs.push({
-        x: map(i, 0, 2, -this.w / 3, this.w / 3),
-        s: random(16, 20),
+        x: map(i, 0, 2, -25, 25),
+        y: random(-14, -8),
+        s: random(34, 42),
       });
     }
   }
@@ -138,10 +151,18 @@ class CloudPlatform extends Platform {
     noStroke();
     fill(this.color);
 
-    rect(-this.w / 2, 0, this.w, this.h, 6);
+    // Base platform
+    rect(-60, 4, 120, 18, 10);
+
+    // Puffy cloud body
     for (let p of this.puffs) {
-      ellipse(p.x, -5, p.s);
+      ellipse(p.x, p.y, p.s);
     }
+
+    // highlight
+    fill(255, 80);
+    ellipse(0, -14, 60, 24);
+
     pop();
   }
 }

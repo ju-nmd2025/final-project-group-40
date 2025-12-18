@@ -19,7 +19,6 @@ function setup() {
 
   // create character
   character = new Character(width / 2, height - 100, color(150, 80, 200));
-  initPlatforms();
 
   // Generate initial platforms
   platforms.push(new BambooPlatform(100, 600));
@@ -45,7 +44,7 @@ function draw() {
 
 // Game logic
 function runGame() {
-  // Auto jump on platform
+  // Auto jump on platform function
   checkCollisions();
 
   // Update and draw character
@@ -54,9 +53,25 @@ function runGame() {
 
   // Update and draw platforms
   for (let plat of platforms) {
-    plat.vx = scrollSpeed;
-    plat.update();
-    plat.show();
+    // Sushi platforms move horizontally
+    if (plat instanceof SushiPlatform) {
+      if (!plat.vx) plat.vx = random([-1, 1]) * 2; // initial direction
+      plat.x += plat.vx;
+      if (plat.x < 0 || plat.x + plat.w > width) plat.vx *= -1; // bounce
+    }
+
+    // Bamboo platforms "break" if character lands
+    if (plat instanceof BambooPlatform && !plat.isBroken) {
+      if (isCharacterOnPlatform(character, plat)) {
+        plat.isBroken = true;
+      }
+    }
+
+    // Scroll platforms vertically
+    plat.y += scrollSpeed;
+
+    // Draw only if not broken
+    if (!plat.isBroken) plat.show();
   }
 
   // Remove platforms that go offscreen and add new ones

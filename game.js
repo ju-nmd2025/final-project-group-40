@@ -43,6 +43,45 @@ function draw() {
   }
 }
 
+// Game logic
+function runGame() {
+  // Auto jump on platform
+  checkCollisions();
+
+  // Update and draw character
+  character.update();
+  character.draw();
+
+  // Update and draw platforms
+  for (let plat of platforms) {
+    plat.vx = scrollSpeed;
+    plat.update();
+    plat.show();
+  }
+
+  // Remove platforms that go offscreen and add new ones
+  platforms = platforms.filter((p) => !p.offscreen());
+  while (platforms.length < 6) {
+    let type = random() > 0.33 ? "Bamboo" : random() > 0.5 ? "Sushi" : "Cloud";
+    let y = random(-100, 0);
+    let x = random(50, width - 50);
+    if (type === "Bamboo") platforms.push(new BambooPlatform(x, y));
+    else if (type === "Sushi") platforms.push(new SushiPlatform(x, y));
+    else platforms.push(new CloudPlatform(x, y));
+  }
+
+  // Score
+  score++;
+  fill(255);
+  textSize(20);
+  text("Score: " + score, 20, 30);
+
+  // Check if character falls
+  if (character.y > height) {
+    gameState = "gameover";
+  }
+}
+
 // Game status screens
 function showStartScreen() {
   fill(255);

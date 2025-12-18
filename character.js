@@ -1,5 +1,4 @@
 let t = 0;
-let character;
 
 class Character {
   constructor(x, y, color) {

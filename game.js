@@ -60,13 +60,12 @@ function runGame() {
       if (plat.x < 0 || plat.x + plat.w > width) plat.vx *= -1; // bounce
     }
 
-    // Bamboo platforms "break" if character lands
+    // Bamboo platforms break if character jumps on it
     if (plat instanceof BambooPlatform && !plat.isBroken) {
       if (isCharacterOnPlatform(character, plat)) {
         plat.isBroken = true;
       }
     }
-
     // Scroll platforms vertically
     plat.y += scrollSpeed;
 
@@ -91,10 +90,30 @@ function runGame() {
   textSize(20);
   text("Score: " + score, 20, 30);
 
-  // Check if character falls
+  // Check if character falls and end game
   if (character.y > height) {
     gameState = "gameover";
   }
+}
+
+// Collision logic
+function checkCollisions() {
+  for (let plat of platforms) {
+    if (isCharacterOnPlatform(character, plat)) {
+      character.y = plat.y - character.h / 2;
+      character.vy = character.jumpStrength; // auto jump
+    }
+  }
+}
+
+function isCharacterOnPlatform(char, plat) {
+  return (
+    char.x + char.w / 2 > plat.x &&
+    char.x - char.w / 2 < plat.x + plat.w &&
+    char.y + char.h / 2 >= plat.y &&
+    char.y + char.h / 2 <= plat.y + plat.h &&
+    char.vy >= 0
+  );
 }
 
 // Game status screens
@@ -121,5 +140,29 @@ function keyPressed() {
     character.isColliding(character, platform)
   ) {
     character.y -= 120;
+  }
+}
+
+// Keyboard controls to (re)-start
+function keyPressed() {
+  if (gameState === "start" && key === " ") {
+    gameState = "playing";
+    score = 0;
+    character.y = height - 100;
+    character.vy = 0;
+  }
+
+  if (gameState === "gameover" && (key === "r" || key === "R")) {
+    gameState = "start";
+    score = 0;
+    character.y = height - 100;
+    character.vy = 0;
+
+    // Reset platforms
+    platforms = [
+      new BambooPlatform(100, 600),
+      new SushiPlatform(250, 500),
+      new CloudPlatform(150, 400),
+    ];
   }
 }

@@ -1,6 +1,7 @@
 //Background
 let stars = [];
 const NUM_STARS = 100;
+let initialized = false;
 
 //Arrays to store building info
 let leftBuildings = [];

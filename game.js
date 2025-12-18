@@ -2,7 +2,7 @@ let character;
 let platforms = [];
 let score = 0;
 let gameState = "start"; // Game initial status
-let scrollSpeed = 2;
+let scrollSpeed = 3;
 
 // Setup
 function setup() {

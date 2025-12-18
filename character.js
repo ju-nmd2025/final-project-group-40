@@ -66,6 +66,9 @@ class Character {
     push();
     translate(this.x + this.w / 2, this.y + this.h / 2);
 
+    // Scale function to adapt character to background
+    scale(0.25);
+
     this.drawHead();
     this.drawEars();
     this.drawEyes();

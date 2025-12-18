@@ -25,6 +25,9 @@ show() {
     rectMode(CENTER);
     noStroke();
 
+
+    /*RICE*/
+
     // Rice shape
     fill(220); // white rice
     ellipse(0, 32, this.w * 0.95, this.h * 0.45);
@@ -43,6 +46,8 @@ show() {
         }
     }
 
+
+    /*SALMON*/
     // Salmon part 
     fill(255, 120, 120); // pink salmon
     beginShape();
@@ -73,6 +78,8 @@ show() {
         );
     }
 
+    /*HIGHLIGHTS*/
+
     // Highlights
     noStroke();
     fill(255,200);
@@ -81,5 +88,4 @@ show() {
 pop();
 
 }
-
 }

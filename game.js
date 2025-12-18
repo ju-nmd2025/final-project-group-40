@@ -2,7 +2,7 @@ let character;
 let platforms = [];
 let score = 0;
 let gameState = "start"; // Game initial status
-let scrollSpeed = 3;
+let scrollSpeed = 4;
 
 // Setup
 function setup() {
@@ -52,42 +52,43 @@ function runGame() {
       if (plat.x < 0 || plat.x + plat.w > width) plat.vx *= -1; // bounce
     }
 
-    // Bamboo platforms break if character jumps on it
-    for (let plat of platforms) {
-      if (plat instanceof BambooPlatform && plat.breakTimer) {
-        plat.breakTimer--;
-        if (plat.breakTimer <= 0) plat.isBroken = true;
-      }
+    // Scroll platforms vertically
+    plat.y += scrollSpeed;
+
+    // Draw only if not broken
+    if (!plat.isBroken) plat.show();
+  }
+
+  // Update bamboo platforms to handle delayed breaking
+  for (let plat of platforms) {
+    if (plat instanceof BambooPlatform && plat.breakTimer) {
+      plat.breakTimer--;
+      if (plat.breakTimer <= 0) plat.isBroken = true;
     }
   }
-  // Scroll platforms vertically
-  plat.y += scrollSpeed;
 
-  // Draw only if not broken
-  if (!plat.isBroken) plat.show();
-}
+  // Remove platforms that go offscreen and add new ones
+  platforms = platforms.filter((p) => !p.offscreen());
+  while (platforms.length < 12) {
+    let lastY = platforms.length ? min(...platforms.map((p) => p.y)) : 0;
+    let y = lastY - random(50, 100); // always a bit above the highest platform
+    let x = random(50, width - 50);
+    let type = random() > 0.33 ? "Bamboo" : random() > 0.5 ? "Sushi" : "Cloud";
+    if (type === "Bamboo") platforms.push(new BambooPlatform(x, y));
+    else if (type === "Sushi") platforms.push(new SushiPlatform(x, y));
+    else platforms.push(new CloudPlatform(x, y));
+  }
 
-// Remove platforms that go offscreen and add new ones
-platforms = platforms.filter((p) => !p.offscreen());
-while (platforms.length < 12) {
-  let lastY = platforms.length ? min(...platforms.map((p) => p.y)) : 0;
-  let y = lastY - random(50, 100); // always a bit above the highest platform
-  let x = random(50, width - 50);
-  let type = random() > 0.33 ? "Bamboo" : random() > 0.5 ? "Sushi" : "Cloud";
-  if (type === "Bamboo") platforms.push(new BambooPlatform(x, y));
-  else if (type === "Sushi") platforms.push(new SushiPlatform(x, y));
-  else platforms.push(new CloudPlatform(x, y));
-}
+  // Score
+  score++;
+  fill(255);
+  textSize(20);
+  text("Score: " + score, 20, 30);
 
-// Score
-score++;
-fill(255);
-textSize(20);
-text("Score: " + score, 20, 30);
-
-// Check if character falls and end game
-if (character.y > height) {
-  gameState = "gameover";
+  // Check if character falls and end game
+  if (character.y > height) {
+    gameState = "gameover";
+  }
 }
 
 // Collision logic
@@ -151,14 +152,14 @@ function keyPressed() {
   if (gameState === "start" && key === " ") {
     gameState = "playing";
     score = 0;
-    character.y = height - 100;
+    character.y = height - 200;
     character.vy = 0;
   }
 
   if (gameState === "gameover" && (key === "r" || key === "R")) {
     gameState = "start";
     score = 0;
-    character.y = height - 100;
+    character.y = height - 200;
     character.vy = 0;
 
     // Reset platforms

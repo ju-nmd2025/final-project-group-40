@@ -1,11 +1,3 @@
-import {
-  Platform,
-  BambooPlatform,
-  SushiPlatform,
-  CloudPlatform,
-} from "platform.js";
-import { Character } from "./character";
-
 let character;
 let platforms = [];
 let score = 0;
@@ -61,47 +53,58 @@ function runGame() {
     }
 
     // Bamboo platforms break if character jumps on it
-    if (plat instanceof BambooPlatform && !plat.isBroken) {
-      if (isCharacterOnPlatform(character, plat)) {
-        plat.isBroken = true;
+    for (let plat of platforms) {
+      if (plat instanceof BambooPlatform && plat.breakTimer) {
+        plat.breakTimer--;
+        if (plat.breakTimer <= 0) plat.isBroken = true;
       }
     }
-    // Scroll platforms vertically
-    plat.y += scrollSpeed;
-
-    // Draw only if not broken
-    if (!plat.isBroken) plat.show();
   }
+  // Scroll platforms vertically
+  plat.y += scrollSpeed;
 
-  // Remove platforms that go offscreen and add new ones
-  platforms = platforms.filter((p) => !p.offscreen());
-  while (platforms.length < 6) {
-    let type = random() > 0.33 ? "Bamboo" : random() > 0.5 ? "Sushi" : "Cloud";
-    let y = random(-100, 0);
-    let x = random(50, width - 50);
-    if (type === "Bamboo") platforms.push(new BambooPlatform(x, y));
-    else if (type === "Sushi") platforms.push(new SushiPlatform(x, y));
-    else platforms.push(new CloudPlatform(x, y));
-  }
+  // Draw only if not broken
+  if (!plat.isBroken) plat.show();
+}
 
-  // Score
-  score++;
-  fill(255);
-  textSize(20);
-  text("Score: " + score, 20, 30);
+// Remove platforms that go offscreen and add new ones
+platforms = platforms.filter((p) => !p.offscreen());
+while (platforms.length < 12) {
+  let lastY = platforms.length ? min(...platforms.map((p) => p.y)) : 0;
+  let y = lastY - random(50, 100); // always a bit above the highest platform
+  let x = random(50, width - 50);
+  let type = random() > 0.33 ? "Bamboo" : random() > 0.5 ? "Sushi" : "Cloud";
+  if (type === "Bamboo") platforms.push(new BambooPlatform(x, y));
+  else if (type === "Sushi") platforms.push(new SushiPlatform(x, y));
+  else platforms.push(new CloudPlatform(x, y));
+}
 
-  // Check if character falls and end game
-  if (character.y > height) {
-    gameState = "gameover";
-  }
+// Score
+score++;
+fill(255);
+textSize(20);
+text("Score: " + score, 20, 30);
+
+// Check if character falls and end game
+if (character.y > height) {
+  gameState = "gameover";
 }
 
 // Collision logic
 function checkCollisions() {
   for (let plat of platforms) {
-    if (isCharacterOnPlatform(character, plat)) {
-      character.y = plat.y - character.h / 2;
-      character.vy = character.jumpStrength; // auto jump
+    if (plat instanceof BambooPlatform) {
+      if (!plat.isBroken && isCharacterOnPlatform(character, plat)) {
+        character.y = plat.y - character.h / 2;
+        character.vy = character.jumpStrength; // auto jump
+        // Break platform AFTER jump - using delayed frames
+        plat.breakTimer = 10;
+      }
+    } else {
+      if (isCharacterOnPlatform(character, plat)) {
+        character.y = plat.y - character.h / 2;
+        character.vy = character.jumpStrength;
+      }
     }
   }
 }

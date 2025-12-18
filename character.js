@@ -66,7 +66,7 @@ class Character {
     push();
     translate(this.x + this.w / 2, this.y + this.h / 2);
 
-    // Scale function to adapt character to background
+    // Scale function to adapt character to background - https://p5js.org/reference/p5/scale/
     scale(0.25);
 
     this.drawHead();
@@ -241,7 +241,9 @@ function setup() {
 }
 
 function draw() {
-  background(240);
+  // clear function based on https://stackoverflow.com/questions/49734796/is-it-possible-to-make-a-transparent-background-color-on-javascript-p5js
+  clear();
+  background(300);
 
   // Draw the character
   character.draw();

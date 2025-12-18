@@ -10,7 +10,7 @@ class Character {
     this.vx = 0;
     this.vy = 0;
     this.gravity = 0.8;
-    this.jumpStrength = -18;
+    this.jumpStrength = -14;
     this.speed = 6;
     this.whiskerLengths = [25, 30, 25]; // Array for whisker lengths
     this.eyeHighlights = []; // Array for eye highlight positions
@@ -34,7 +34,7 @@ class Character {
     }
   }
 
-  //Game logic - in progress
+  //Game logic
   update() {
     // gravity
     this.vy += this.gravity;
@@ -66,7 +66,7 @@ class Character {
     translate(this.x + this.w / 2, this.y + this.h / 2);
 
     // Scale function to adapt character to background - https://p5js.org/reference/p5/scale/
-    scale(0.25);
+    scale(0.35);
 
     this.drawHead();
     this.drawEars();

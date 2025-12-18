@@ -2,11 +2,11 @@ let sushiPlatform;
 
 function setup() {
     createCanvas(400,600);
-    sushiPlatform = new SushiPlatform(80, 350, 240, 20);   
+    sushiPlatform = new SushiPlatform(200, 350, 260, 70);   
 }
 
 function draw() {
-    background(220);
+    background(240);
     sushiPlatform.show();
 }
 
@@ -22,45 +22,64 @@ class SushiPlatform {
 show() {
     push();
     translate(this.x, this.y);
+    rectMode(CENTER);
+    noStroke();
 
+    // Rice shape
+    fill(220); // white rice
+    ellipse(0, 32, this.w * 0.95, this.h * 0.45);
 
     // Rice base 
-    fill(255); // white rice
-    stroke(200);
-    strokeWeight(1);
-    rect(0, 0, this.w, this.h, 40);
+    fill(250); // white rice
+    stroke(230);
+    strokeWeight(2);
+    ellipse(0, 22, this.w, this.h * 0.6);
 
-    // Topping salmon 
+    // Rice details 
+    fill (230);
+    for (let i = -this.w / 2 + 15; i < this.w / 2; i += 20) {
+        for (let j = 12; j < 32; j += 8) {
+            ellipse(i + random(-1, 2), j + random(-1, 1), 3 , 3);
+        }
+    }
+
+    // Salmon part 
     fill(255, 120, 120); // pink salmon
-    stroke(220, 100, 100);
-    strokeWeight(1);
-    //Adding curves to the salmon
     beginShape();
-    vertex(10, 0);
-    bezierVertex(this.w * 0.25, -this.h * 0.6, this.w *0.75, -this.h * 0.6, this.w - 10, 0);
-    vertex(this.w - 10, this.h * 0.4);
-    bezierVertex(this.w * 0.75, this.h * 0.1, this.w * 0.25, this.h * 0.1, 10, this.h *0,4);
+    vertex(-this.w / 2 + 20, 10);
+    bezierVertex (
+        -this.w / 4, -35, 
+        this.w / 4, -35,
+        this.w / 2 -20, 10
+    );
+    vertex(this.w / 2 - 10, 30);
+    bezierVertex(
+        this.w / 4, 10,
+        -this.w / 4, 10,
+        -this.w / 2 + 10, 30
+    );
     endShape(CLOSE);
-    
-    // Seaweed wrap
-    fill(20, 60, 20); //dark green seaweed
-    noStroke();
-    rect(0, this.h * 0.7, this.w, this.h * 0.3, 10);
 
+    // Salmo stripes
+    stroke(255, 170, 170);
+    strokeWeight(3);
+    noFill();
+    for (let i = -this.w / 2 + 40; i < this.w / 4; i += 35) {
+        bezier(
+            i, 18,
+            i + 10, 5,
+            i + 20, 5, 
+            i + 30, 10
+        );
+    }
 
     // Highlights
     noStroke();
-    fill(255,255, 0);rect(4, 4, this.w - 8, this.h / 3, 8);
-
-     //* More details
-    fill(0);
-    for (let i = 5; i < this.w; i += 15) {
-        for (let j = 5; j < this.h * 0.6; j += 10) {
-            ellipse(i, j, 3, 3);
-        }
-    }
+    fill(255,200);
+    ellipse(0, -5, this.w * 0.6, 18);
     
 pop();
 
 }
+
 }
